@@ -1,9 +1,14 @@
 // capa de red que se encargara de recibir la petcion http, procesar y enviar al controller
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 
 const response = require('../../network/response');
-const controller = require('./controller')
+const controller = require('./controller');
+
+const upload = multer({
+    dest: 'uploads/',
+})
 
 
 router.get('/', (req, res) => {
@@ -18,8 +23,8 @@ router.get('/', (req, res) => {
 })
 
 
-router.post('/', (req, res) => {
-    controller.add(req.body.chat, req.body.user, req.body.message)
+router.post('/', upload.single('file'), (req, res) => {
+    controller.add(req.body.chat, req.body.user, req.body.message, req.file)
         .then(data => {
             response.success(req, res, data);
         })
